@@ -8,7 +8,7 @@ def c_l_baseball(v: float, omega: float) -> float:
     baseball and returns the lift coefficent (C_l) which is generated due to the magnus 
     effect as parameterized by Sawicki, Hubbard, and Stronge (2003).
     '''
-    R = 0.0364 #radius of MLB baseball (Nathan 2007)
+    R = 0.0364 #radius of an MLB baseball (Nathan 2007)
     S = R * omega / v
     if S > 0.1:
         return 0.09 + (0.6 * S)
@@ -20,9 +20,11 @@ def f_m_baseball(v: float, omega: float, rho: float, axis: float = 0) -> float:
     '''
     Takes an initial velocity (v, m/s), an angular velocity (omega, rad/s), air density
     (rho, kg/m^3), and the axis of rotation (axis, rad), and, in conjunction with the 
-    c_l_baseball function, returns the force due to the magnus effect.
+    c_l_baseball function, returns the force due to the magnus effect. The axis is measured
+    in the clockwise direction from the positive y axis (0 = pure back-spin, pi = pure top-spin)
     '''
-    A = np.pi * (0.0364 ** 2) #cross-sectional area of an MLB baseball (Nathan 2007)
+    R = 0.0364 #radius of an MLB baseball (Nathan 2007)
+    A = np.pi * (R ** 2)
     return ((1 / 2) * c_l_baseball(v, omega) * rho * A * (v ** 2)) * np.cos(axis)
 
 
@@ -31,7 +33,7 @@ def c_d_baseball(v: float, omega: float) -> float:
     Takes in an initial velocity (v, m/s) and angular velocity (omega, rad/s) for a baseball 
     and returns the drag coefficent (C_d) which is generated due to quadratic drag.
     '''
-    R = 0.0364 #radius of MLB baseball (Nathan 2007)
+    R = 0.0364 #radius of an MLB baseball (Nathan 2007)
     S = R * omega / v
     C_d0 = 0.3008   # zero-spin baseline, ~Nathan/Kensrud batted-ball fits
     return C_d0 + 0.0292 * S
@@ -43,7 +45,8 @@ def f_d_baseball(v: float, omega: float, rho: float) -> float:
     (rho, kg/m^3), and, in conjunction with the c_d_baseball function, returns the force
     due to quadratic drag.
     '''
-    A = np.pi * (0.0364 ** 2) #cross-sectional area of an MLB baseball (Nathan 2007)
+    R = 0.0364 #radius of an MLB baseball (Nathan 2007)
+    A = np.pi * (R ** 2)
     return (1 / 2) * c_d_baseball(v, omega) * rho * A * (v ** 2)
 
 
