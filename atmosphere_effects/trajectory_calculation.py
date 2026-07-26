@@ -61,7 +61,8 @@ def trajectory(v: float, omega: float, rho: float, angle: float, axis: float = 0
     calculated trajectory of an MLB baseball via plotting the 2D position of the ball in x-z 
     space while z is positive and returns the final x distance. The savefig function is 
     not called so that multiple instances of the trajectory function can be stacked in a 
-    single graph to show parameter variation.
+    single graph to show parameter variation. An important note is that the spin axis is
+    restricted to the y-axis where 0 rad defines pure backspin and pi rad is pure top spin.
     '''
     
     # inital values
