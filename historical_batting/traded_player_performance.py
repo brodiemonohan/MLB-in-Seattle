@@ -103,7 +103,8 @@ def find_traded_players(team: str, start_year: int = 2009,
                             'PA_previous': previous['PA'],
                             f'AB_{team}': row['AB'],
                             'AB_previous': previous['AB'],
-                            'HR_diff': (row['HR'] - previous['HR']),
+                            'HR/PA_diff': ((row['HR'] / row['PA'])
+                                           - (previous['HR'] / previous['PA'])),
                             'SLG_diff': (row['SLG'] - previous['SLG']),
                             'BA_diff': (row['BA'] - previous['BA']),
                             'OBP_diff': (row['OBP'] - previous['OBP'])})
@@ -134,7 +135,8 @@ def find_traded_players(team: str, start_year: int = 2009,
                             'PA_previous': next['PA'],
                             f'AB_{team}': row['AB'],
                             'AB_previous': next['AB'],
-                            'HR_diff': (row['HR'] - next['HR']),
+                            'HR/PA_diff': ((row['HR'] / row['PA'])
+                                           - (next['HR'] / next['PA'])),
                             'SLG_diff': (row['SLG'] - next['SLG']),
                             'BA_diff': (row['BA'] - next['BA']),
                             'OBP_diff': (row['OBP'] - next['OBP'])})
