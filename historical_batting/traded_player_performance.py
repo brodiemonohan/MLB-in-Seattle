@@ -1,0 +1,142 @@
+'''
+Brodie Monohan
+CSE 163
+
+This file defines the find_traded_player function which looks at
+average player performance on a team due to external factors by
+comparing performance of recently traded players.
+'''
+
+# data
+import pybaseball
+from pybaseball import batting_stats_bref
+
+# libraries
+import pandas as pd
+
+# New library. Users of pybaseball have noted this is required
+# due to blocks from repeated requests on the Baseball Reference
+# website which pybaseball scrapes.
+import time
+
+pybaseball.cache.enable()  # store already scraped data locally
+
+
+def find_traded_players(team: str, start_year: int = 2009,
+                        end_year: int = 2026, min_PA: int = 0,
+                        min_AB: int = 0) -> pd.DataFrame:
+    '''
+    This function takes a team location, a start year (inclusive),
+    an end year (inclusive), and minimum PAs and ABs, and returns
+    a pandas dataframe of the name of all of the players
+    that were traded to or from that team, the year, the
+    previous or next team, and their batting average on
+    the given team. This may take a while to run as Baseball
+    Reference blocks rapid requests so a sleep section is
+    required between each call to the batting_stats_bref
+    function. Ignores mid-season trades to or from specified
+    team.
+    '''
+
+    # initialize output list
+    traded_players = []
+
+    for year in range(start_year, end_year + 1):
+
+        # make this_year all player batting stats of that season.
+        this_year = batting_stats_bref(year)
+        time.sleep(3)
+
+        if year > 2008:
+            # make last_year all player batting stats of last season.
+            # makes sure the last year data exists.
+            last_year = batting_stats_bref(year - 1)
+            time.sleep(3)
+
+        if year < 2026:
+            # make next_year all player batting stats of next season.
+            # makes sure the next year data exists.
+            next_year = batting_stats_bref(year + 1)
+            time.sleep(3)
+
+        # all three calls to batting_stats_bref return DataFrames
+        # filter players in this_year df to only the specified team
+        players_this_year = this_year[this_year['Tm'] == team]
+
+        for i in players_this_year.index:
+
+            # need to loop throuhg each row which is a unique player.
+            row = players_this_year.loc[i]
+
+            # pulls the player's name from their df row.
+            name = row['Name']
+
+            if year > 2008:
+
+                # finds the same players row in the previous year.
+                previous = last_year[last_year['Name'] == name]
+
+                # Need to check that there is previous data otherwise error.
+                if len(previous) > 0:
+
+                    # the filtering above still returns a df even if
+                    # there is only one entry row so I need to turn this
+                    # into a series like the row of players_this_year.
+                    # Need to use iloc becuase indicies are retained
+                    # from pre-filter.
+                    previous = previous.iloc[0]
+
+                    # check input restrictions and for traded players.
+                    # mid-season trades show up a both teams seperated
+                    # by a comma so team must not be in previous or next
+                    if (team not in previous['Tm']
+                            and row['PA'] >= min_PA
+                            and previous['PA'] >= min_PA
+                            and row['AB'] >= min_AB
+                            and previous['AB'] >= min_AB):
+
+                        traded_players.append({
+                            'Name': name,
+                            'Years': str(year - 1) + ' -> ' + str(year),
+                            'Teams': f'from {previous['Tm']}',
+                            f'PA_{team}': row['PA'],
+                            'PA_previous': previous['PA'],
+                            f'AB_{team}': row['AB'],
+                            'AB_previous': previous['AB'],
+                            'HR_diff': (row['HR'] - previous['HR']),
+                            'SLG_diff': (row['SLG'] - previous['SLG']),
+                            'BA_diff': (row['BA'] - previous['BA']),
+                            'OBP_diff': (row['OBP'] - previous['OBP'])})
+
+            if year < 2026:
+
+                # next finds the same players row from the next year
+                next = next_year[next_year['Name'] == name]
+
+                # check data exists
+                if len(next) > 0:
+
+                    # same df -> series step and empty df check.
+                    next = next.iloc[0]
+
+                    # check inputs and traded player
+                    if (team not in next['Tm']
+                            and row['PA'] >= min_PA
+                            and next['PA'] >= min_PA
+                            and row['AB'] >= min_AB
+                            and next['AB'] >= min_AB):
+
+                        traded_players.append({
+                            'Name': name,
+                            'Years': str(year) + ' -> ' + str(year + 1),
+                            'Teams': f'to {next['Tm']}',
+                            f'PA_{team}': row['PA'],
+                            'PA_previous': next['PA'],
+                            f'AB_{team}': row['AB'],
+                            'AB_previous': next['AB'],
+                            'HR_diff': (row['HR'] - next['HR']),
+                            'SLG_diff': (row['SLG'] - next['SLG']),
+                            'BA_diff': (row['BA'] - next['BA']),
+                            'OBP_diff': (row['OBP'] - next['OBP'])})
+
+    return pd.DataFrame(traded_players)
