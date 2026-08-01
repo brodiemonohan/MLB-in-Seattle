@@ -2,17 +2,19 @@
 Brodie Monohan
 CSE 163
 
-This file defines the find_traded_player function which looks at
+This file defines the find_traded_player() function which looks at
 average player performance on a team due to external factors by
 comparing performance of recently traded players.
 '''
 
-# data
+# import data
 import pybaseball
 from pybaseball import batting_stats_bref
 
 # libraries
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # New library. Users of pybaseball have noted this is required
 # due to blocks from repeated requests on the Baseball Reference
@@ -23,7 +25,7 @@ pybaseball.cache.enable()  # store already scraped data locally
 
 
 def find_traded_players(team: str, start_year: int = 2009,
-                        end_year: int = 2026, min_PA: int = 0,
+                        end_year: int = 2025, min_PA: int = 0,
                         min_AB: int = 0) -> pd.DataFrame:
     '''
     This function takes a team location, a start year (inclusive),
@@ -31,33 +33,37 @@ def find_traded_players(team: str, start_year: int = 2009,
     a pandas dataframe of the name of all of the players
     that were traded to or from that team, the year, the
     previous or next team, and their batting average on
-    the given team. This may take a while to run as Baseball
+    the given team. This may take a while (~3m max) to run
+    becasue Baseball
     Reference blocks rapid requests so a sleep section is
     required between each call to the batting_stats_bref
     function. Ignores mid-season trades to or from specified
     team.
     '''
 
-    # initialize output list
+    # this is a slow function so this helps to know it is working.
+    print('Running\n ...')
+
+    # initialize output list for dataframe.
     traded_players = []
 
     for year in range(start_year, end_year + 1):
 
         # make this_year all player batting stats of that season.
-        this_year = batting_stats_bref(year)
         time.sleep(3)
+        this_year = batting_stats_bref(year)
 
         if year > 2008:
             # make last_year all player batting stats of last season.
             # makes sure the last year data exists.
-            last_year = batting_stats_bref(year - 1)
             time.sleep(3)
+            last_year = batting_stats_bref(year - 1)
 
         if year < 2026:
             # make next_year all player batting stats of next season.
             # makes sure the next year data exists.
-            next_year = batting_stats_bref(year + 1)
             time.sleep(3)
+            next_year = batting_stats_bref(year + 1)
 
         # all three calls to batting_stats_bref return DataFrames
         # filter players in this_year df to only the specified team
@@ -100,11 +106,12 @@ def find_traded_players(team: str, start_year: int = 2009,
                             'Years': str(year - 1) + ' -> ' + str(year),
                             'Teams': f'from {previous['Tm']}',
                             f'PA_{team}': row['PA'],
-                            'PA_previous': previous['PA'],
+                            'PA_other': previous['PA'],
                             f'AB_{team}': row['AB'],
-                            'AB_previous': previous['AB'],
+                            'AB_other': previous['AB'],
                             'HR/PA_diff': ((row['HR'] / row['PA'])
-                                           - (previous['HR'] / previous['PA'])),
+                                           - (previous['HR'] /
+                                              previous['PA'])),
                             'SLG_diff': (row['SLG'] - previous['SLG']),
                             'BA_diff': (row['BA'] - previous['BA']),
                             'OBP_diff': (row['OBP'] - previous['OBP'])})
@@ -132,13 +139,37 @@ def find_traded_players(team: str, start_year: int = 2009,
                             'Years': str(year) + ' -> ' + str(year + 1),
                             'Teams': f'to {next['Tm']}',
                             f'PA_{team}': row['PA'],
-                            'PA_previous': next['PA'],
+                            'PA_other': next['PA'],
                             f'AB_{team}': row['AB'],
-                            'AB_previous': next['AB'],
+                            'AB_other': next['AB'],
                             'HR/PA_diff': ((row['HR'] / row['PA'])
                                            - (next['HR'] / next['PA'])),
                             'SLG_diff': (row['SLG'] - next['SLG']),
                             'BA_diff': (row['BA'] - next['BA']),
                             'OBP_diff': (row['OBP'] - next['OBP'])})
 
+    print('Done')
     return pd.DataFrame(traded_players)
+
+
+def main():
+    d = {'HR/PA_diff': 'Home-run Rate Difference',
+         'SLG_diff': 'Slugging Difference',
+         'BA_diff': 'Batting Average Difference',
+         'OBP_diff': 'On-Base Percentage Difference'}
+
+    # user input
+    team = 'Seattle'
+    x = 'HR/PA_diff'
+    y = 'SLG_diff'
+
+    players = find_traded_players(team)
+    sns.relplot(data=players, x=x, y=y)
+    plt.title(f'{team} Traded Player Performance')
+    plt.xlabel(d[x])
+    plt.ylabel(d[y])
+    plt.savefig(f'{team}_traded_player_performance.png', bbox_inches='tight')
+
+
+if __name__ == '__main__':
+    main()
