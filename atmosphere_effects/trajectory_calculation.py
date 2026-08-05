@@ -11,6 +11,7 @@ of a baseball in a given environment.
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def c_l_baseball(v: float, omega: float) -> float:
     '''
     Takes in an initial velocity (v, m/s) and angular velocity (omega, rad/s)
@@ -68,7 +69,8 @@ def trajectory(v: float, omega: float, rho: float, angle: float,
                color: str = 'k', marker: str = None, linestyle: str = None,
                g: float = 9.81, m: float = 0.145, x: float = 0, z: float = 1,
                show_distance: bool = False, label_density: bool = True,
-               savefig: bool = False) -> None:
+               savefig: bool = False, plot: bool = True,
+               legend: bool = True) -> None:
     '''
     Takes required arguments exit velocity (v, m/s), spin rate (omega, rad/s),
     air density (rho, kg/m^3), launch angle (angle, rad), and spin vector
@@ -133,10 +135,12 @@ def trajectory(v: float, omega: float, rho: float, angle: float,
     if marker is not None:
         plt.scatter(xs, zs, color=color, marker=marker)
 
-    plt.plot(xs, zs, color=color, label=plot_label, linestyle=linestyle)
-    plt.ylabel('Height (m)')
-    plt.xlabel('Distance (m)')
-    plt.legend()
+    if plot:
+        plt.plot(xs, zs, color=color, label=plot_label, linestyle=linestyle)
+        plt.ylabel('Height (m)')
+        plt.xlabel('Distance (m)')
+        if legend:
+            plt.legend()
 
     if savefig and label:
         plt.savefig(label + '_trajectory_plot.png', bbox_inches='tight')
