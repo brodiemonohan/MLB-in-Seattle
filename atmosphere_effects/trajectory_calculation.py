@@ -2,7 +2,7 @@
 Brodie Monohan
 CSE 163
 
-This file defines the trajectory() function and its four
+This file defines the trajectory calculator function and its four
 helper functions. It computes and plots the trajecotry
 of a baseball in a given environment.
 '''
@@ -10,6 +10,8 @@ of a baseball in a given environment.
 # import dependencies
 import numpy as np
 import matplotlib.pyplot as plt
+import air_densities as ad
+import pandas as pd
 
 
 def c_l_baseball(v: float, omega: float) -> float:
@@ -66,11 +68,11 @@ def f_d_baseball(v: float, omega: float, rho: float) -> float:
 
 def trajectory(v: float, omega: float, rho: float, angle: float,
                axis: float = 0, step: float = 0.01, label: str = None,
-               color: str = 'k', marker: str = None, linestyle: str = None,
+               color: str = None, marker: str = None, linestyle: str = None,
                g: float = 9.81, m: float = 0.145, x: float = 0, z: float = 1,
                show_distance: bool = False, label_density: bool = True,
-               savefig: bool = False, plot: bool = True,
-               legend: bool = True) -> None:
+               savefig: bool = False, plot: bool = True, lw: int = 1.5,
+               legend: bool = True, zorder: int = 0, alpha: int = 1) -> float:
     '''
     Takes required arguments exit velocity (v, m/s), spin rate (omega, rad/s),
     air density (rho, kg/m^3), launch angle (angle, rad), and spin vector
@@ -122,12 +124,12 @@ def trajectory(v: float, omega: float, rho: float, angle: float,
         angle = np.arctan(v_z / v_x)
 
     # plotting
-    if label_density and g == 9.81:
+    if label_density and g == 9.81 and label is not None:
         plot_label = f'{label} ({rho} $\\rm kg/m^3$)'
-    elif label_density:
+    elif label_density and label is not None:
         plot_label = f'{label} ({rho} $\\rm kg/m^3$, g = {g} $\\rm m/s^2$)'
     else:
-        plot_label = label
+        plot_label = None
 
     if show_distance:
         plt.axvline(xs[-1], color=color, linestyle=':')
@@ -136,7 +138,8 @@ def trajectory(v: float, omega: float, rho: float, angle: float,
         plt.scatter(xs, zs, color=color, marker=marker)
 
     if plot:
-        plt.plot(xs, zs, color=color, label=plot_label, linestyle=linestyle)
+        plt.plot(xs, zs, color=color, label=plot_label, linestyle=linestyle,
+                 lw=lw, zorder=zorder, alpha=alpha)
         plt.ylabel('Height (m)')
         plt.xlabel('Distance (m)')
         if legend:
@@ -153,27 +156,62 @@ def trajectory(v: float, omega: float, rho: float, angle: float,
 
 def main():
 
+    print('Running')
+    print('...')
+
+    df = pd.read_csv('../ancillary_data/stadium_data.csv')
+    lons = df['longitude']
+    lats = df['latitude']
+    stadiums = df['stadium']
+    ids = df['venue_id']
+
+    output = []
+
+    for lon, lat, stadium, id in zip(lons, lats, stadiums, ids):
+        d = {}
+        T = ad.average_temp(lon, lat, venue_id=id)
+        e = ad.elevation(lon, lat)
+        rho = ad.density(T, e, 0.0289647)
+        d['stadium'] = stadium
+        d['rho'] = rho
+        output.append(d)
+
+    df2 = pd.DataFrame(output)
+
+    mark = ['T-Mobile Park', 'Coors Field', 'Oracle Park']
+
     # user input
     v = 45  # m/s
     omega = 150  # rad/s
     axis = 0  # rad, pure backspin
-    angle = np.pi/6  # rad (30 deg)
-    step = 0.2  # s
+    angle = np.pi/6  # rad (45 deg)
+    step = 0.05  # s
 
-    trajectory(v, omega, 1.2, angle, axis, step,
-               label='Seattle', color='r', linestyle='-', savefig=False)
-    trajectory(v, omega, 0.95, angle, axis, step,
-               label='Denver', color='k', linestyle='-', savefig=False)
-    trajectory(v, omega, 0.4, angle, axis, step,
-               label='Mt. Everest', color='k', linestyle=':', savefig=False)
-    trajectory(v, omega, 5.89, angle, axis, step,
-               label='Xenon gas', color='k', linestyle='--', savefig=False)
-    trajectory(v, omega, 0.02, angle, axis, step,
-               label='Mars', color='k', linestyle='-.', g=3.712, savefig=False)
-    plt.title('Baseball Trajectory in Different Environments')
-    plt.xlim(0, 135)
-    plt.ylim(0, 135)
-    plt.savefig('trajectory_plot.png', bbox_inches='tight')
+    plt.figure(figsize=(14, 7))
+
+    for i in df2.index:
+        row = df2.loc[i]
+        color = 'k'
+        if row['stadium'] in mark:
+            label = row['stadium']
+            color = None
+            zorder = 5
+            alpha = 1
+        else:
+            label = '_'
+            zorder = 0
+            alpha = 0.5
+        if row['rho'] != np.NaN:
+            trajectory(v, omega, row['rho'], angle, axis, step, color=color,
+                       label=label, linestyle='-', savefig=False, legend=False,
+                       zorder=zorder, alpha=alpha, lw=2)
+    plt.title('Baseball Trajectory in Different Stadiums')
+    plt.xlim(128, 140)
+    plt.ylim(0, 6)
+    plt.legend()
+    plt.savefig('full_trajectory_plot.png', bbox_inches='tight')
+
+    print('Done')
 
 
 if __name__ == '__main__':
