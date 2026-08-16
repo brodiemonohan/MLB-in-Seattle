@@ -87,6 +87,8 @@ def trajectory(v: float, omega: float, rho: float, angle: float,
     variation. An important note is that the spin axis is restricted to the
     y-axis where 0 rad defines pure backspin and pi rad is pure top spin.
     '''
+    R = 0.0364  # radius of an MLB baseball (Nathan 2007)
+    k = 0.1  # torque parameter Nathan 2008b
 
     # inital values
     v_x = np.cos(angle) * v

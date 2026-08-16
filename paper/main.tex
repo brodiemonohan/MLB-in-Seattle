@@ -1,0 +1,97 @@
+\documentclass[11pt,twocolumn]{article}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+\usepackage{amsmath, amssymb, graphicx}
+\usepackage{authblk}
+\usepackage{url}
+
+\renewcommand\Authfont{\normalsize}
+\renewcommand\Affilfont{\small}
+\setlength{\affilsep}{0pt}
+
+\providecommand{\apj}{ApJ}
+\providecommand{\apjl}{ApJL}
+\providecommand{\apjs}{ApJS}
+\providecommand{\aap}{A\&A}
+\providecommand{\mnras}{MNRAS}
+\providecommand{\na}{New Astronomy}
+\providecommand{\nat}{Nature}
+\providecommand{\jaavso}{JAAVSO}
+\providecommand{\aj}{AJ}
+\providecommand{\araa}{ARA\&A}
+\providecommand{\pasp}{PASP}
+
+\begin{document}
+
+\title{\textbf{T-Mobile Park's Effect on \\ Major League Baseball in Seattle}}
+\author{Brodie Monohan}
+\affil{\textit{University of Washington}}
+\affil{monohanb@uw.edu}
+
+\date{August 7, 2026}
+
+\twocolumn[
+\begin{@twocolumnfalse}
+\maketitle
+
+\begin{abstract}
+The Seattle Mariners are the only Major League Baseball team to never appear in a World Series. Despite being near the middle of the pack in terms of payroll, Mariner teams since the early 2000s have been disappointing to say the least, with historically bad offenses in the 2010s. Since the team's move from their old stadium into what would become T-mobile Park (formerly Safeco Field), some analysts have noticed that batters seem to perform poorly in the stadium. Former sluggers who were traded to the Mariners would constantly under-perform with their new team, or so it seemed. Some analysts began to theorize there was some external factor causing batters to lose production when being traded to the Mariners. The most prominent theory is that the Seattle climate and the stadium itself that was causing hitters to under-perform. This theory is reinforced by the pitching statistics for Seattle which, since 2000, have been historically good. While a ``cursed'' stadium is a romantic way to explain the Mariner's historic woes, there is also a much more ordinary explanation: that Mariners have just been bad hitters. This project examines if hitting in Seattle is significantly ``harder'' or if players are worse when playing in Seattle by looking at historical batting numbers and investigating the physical conditions of T-Mobile Park.
+\end{abstract}
+
+\vspace{1cm}
+\end{@twocolumnfalse}
+]
+
+\section{Introduction}
+
+
+
+\section{Method}
+\subsection{Historical Batting and Pitching}
+
+\subsection{Atmospheric Effects}
+There are three main forces acting on a baseball in flight: the gravitaional force, the drag force, and the magnus force. These forces are described parametrically as
+\begin{equation}
+    F_g = -mg
+\end{equation}
+\begin{equation}
+    F_d = \frac{1}{2}C_d\rho A v^2
+\end{equation}
+\begin{equation}
+    F_m = \frac{1}{2}C_l\rho A v^2
+\end{equation}
+
+where $m$ is the mass of the ball, $g$ is the acceleration due to gravity, $v$ is the velocity vector, $\rho$ is the air density, $A$ is the cross-sectional area of the ball, $C_d$ is the drag coefficient, and $C_l$ is the lift coefficient. These are well established but you can find specific reference in Nathan (2008). The drag and lift coefficients for an MLB baseball have been determined experimentally with pretty good confidence as
+
+\begin{equation}
+    C_l = \begin{cases}
+        0.09 + (0.6  S) \text{ if } S>0.1\\
+        1.5S \text{ if } S\le0.1
+    \end{cases}
+\end{equation}
+
+\begin{equation}
+    C_d = 0.3 + 0.03 S
+\end{equation}
+
+by~\cite{Sawicki2003} and~\cite{Nathan2008_traj} where $S = R \omega/ v$. The first is the spin decay. As a ball travels though the air, it's angular velocity will decay as friction with the air slows the spin. This is described by Newton's second law:
+
+\begin{equation}
+    \frac{d\omega}{dt} = \frac{\tau_d}{I}
+\end{equation}
+
+\begin{equation}
+    \tau_d = C_Q\omega^2
+\end{equation}
+
+I will need to do some further reading on baseball research to find an experimentally determined $C_Q$ which shouldn't be hard and the moment of inertial of an MLB baseball which I would guess is well approximated by a uniform sphere. I will visualize these trajectories through x-z space by calculating each of the forces at specific time steps to trace out a trajectory for a given air density. This time-stepping scheme (commonly called Euler's Method) is a very classing structure to follow in Physics models; most modern undergraduate physicists will have used this method at some point. The basic idea is at each timestep, you take the conditions from the previous step (like position and velocity) and apply the forces to the object based on those conditions, updating them for the next time step. When the time steps are small enough, you can trace out smooth arcs like how a baseball travels through the air.
+
+\section{Data}
+
+The MLB and third parties have tracked statistics since far before the 1999 season when the Mariners changed stadiums, however, the MLB started to take advanced statistics after the 2014 season with StatCast which includes things like swing speed, ball spin, launch velocity, and other advanced metrics which will be useful for this analysis. An open source Python package called \texttt{pybaseball} already exists for baseball analytics called pybaseball which scrapes Baseball Savant (built on StatCast), as well as FanGraphs and Baseball Reference which are two more proprietary baseball statistic trackers. The batting data that is useful to me extends back to 2008 on FanGraphs.
+
+\bibliographystyle{apalike}
+\bibliography{ref}
+
+\end{document}
