@@ -13,8 +13,8 @@ from pybaseball import batting_stats_bref
 
 # libraries
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 # New library. Users of pybaseball have noted this is required
 # due to blocks from repeated requests on the Baseball Reference
@@ -153,22 +153,42 @@ def find_traded_players(team: str, start_year: int = 2009,
 
 
 def main():
-    d = {'HR/PA_diff': 'Home-run Rate Difference',
-         'SLG_diff': 'Slugging Difference',
-         'BA_diff': 'Batting Average Difference',
-         'OBP_diff': 'On-Base Percentage Difference'}
 
     # user input
     team = 'Seattle'
-    x = 'HR/PA_diff'
-    y = 'SLG_diff'
+    stat1 = 'SLG'
+    stat2 = 'OBP'
+    stat3 = 'HR/PA'
 
     players = find_traded_players(team)
-    sns.relplot(data=players, x=x, y=y)
-    plt.title(f'{team} Traded Player Performance')
-    plt.xlabel(d[x])
-    plt.ylabel(d[y])
-    plt.savefig(f'{team}_traded_player_performance.png', bbox_inches='tight')
+
+    stats = [stat1, stat2, stat3]
+
+    fig, ax = plt.subplots(1, 3, figsize=(14, 5))
+
+    df1 = players[(players['PA_Seattle'] > 320) & (players['PA_other'] > 320)]
+    df2 = players[(players['PA_Seattle'] > 460) & (players['PA_other'] > 460)]
+    df3 = players[(players['PA_Seattle'] > 170) & (players['PA_other'] > 170)]
+
+    dfs = [df1, df2, df3]
+
+    for i in range(3):
+
+        xs = list(dfs[i][stats[i] + '_diff'])
+        ax[i].hist(xs, color='grey', bins=8)
+
+        # average marker
+        ax[i].axvline(np.mean(xs), color='r', linestyle=':')
+
+        # 0 lines
+        ax[i].axvline(0.0, color='k', linestyle=':')
+
+        ax[i].set_xlabel(f'{stats[i]}')
+        ax[i].set_ylabel('Counts')
+
+    # had to look up how to do this
+    fig.suptitle('Traded Player Splits')
+    plt.savefig('traded_player_performance.png', bbox_inches='tight')
 
 
 if __name__ == '__main__':

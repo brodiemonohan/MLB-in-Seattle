@@ -19,7 +19,7 @@ pybaseball.cache.enable()
 
 
 def home_away_splits(start_year: int = 2008, end_year:
-                     int = 2026, team: str = 'Seattle') -> pd.DataFrame:
+                     int = 2025, team: str = 'Seattle') -> pd.DataFrame:
     '''
     Takes a year range and a team. Returns the home and away
     stats for every player that played at least a full season
@@ -95,6 +95,7 @@ def home_away_splits(start_year: int = 2008, end_year:
                 ab = home['AB'].iloc[0]
                 r = home['R'].iloc[0]
                 h = home['H'].iloc[0]
+                hr = home['HR'].iloc[0]
                 twb = home['2B'].iloc[0]
                 thb = home['3B'].iloc[0]
                 rbi = home['RBI'].iloc[0]
@@ -118,6 +119,7 @@ def home_away_splits(start_year: int = 2008, end_year:
                 d_home['AB'] = ab
                 d_home['R'] = r
                 d_home['H'] = h
+                d_home['HR'] = hr
                 d_home['2B'] = twb
                 d_home['3B'] = thb
                 d_home['RBI'] = rbi
@@ -140,6 +142,7 @@ def home_away_splits(start_year: int = 2008, end_year:
                 ab = away['AB'].iloc[0]
                 r = away['R'].iloc[0]
                 h = away['H'].iloc[0]
+                hr = away['HR'].iloc[0]
                 twb = away['2B'].iloc[0]
                 thb = away['3B'].iloc[0]
                 rbi = away['RBI'].iloc[0]
@@ -163,6 +166,7 @@ def home_away_splits(start_year: int = 2008, end_year:
                 d_away['AB'] = ab
                 d_away['R'] = r
                 d_away['H'] = h
+                d_away['HR'] = hr
                 d_away['2B'] = twb
                 d_away['3B'] = thb
                 d_away['RBI'] = rbi
@@ -195,19 +199,32 @@ def home_away_splits(start_year: int = 2008, end_year:
     c_home = home_tot.groupby(['Name']).sum()
     c_away = away_tot.groupby(['Name']).sum()
 
+    # make sure no zerodivision error
+    c_home = c_home[c_home['AB'] > 0]
+    c_away = c_away[c_away['AB'] > 0]
+
     # recompute rate stats
     c_home['BA'] = c_home['H'] / c_home['AB']
-    c_home['OBP'] = (c_home['H'] + c_home['BB'] + c_home['HBP']) / (
-        c_home['AB'] + c_home['BB'] + c_home['HBP'] + c_home['SF'])
     c_home['SLG'] = c_home['TB'] / c_home['AB']
-    c_home['OPS'] = c_home['OBP'] + c_home['SLG']
-    c_home['Split'] = 'Home'
 
     c_away['BA'] = c_away['H'] / c_away['AB']
+    c_away['SLG'] = c_away['TB'] / c_away['AB']
+
+    c_home['OBP'] = (c_home['H'] + c_home['BB'] + c_home['HBP']) / (
+        c_home['AB'] + c_home['BB'] + c_home['HBP'] + c_home['SF'])
     c_away['OBP'] = (c_away['H'] + c_away['BB'] + c_away['HBP']) / (
         c_away['AB'] + c_away['BB'] + c_away['HBP'] + c_away['SF'])
-    c_away['SLG'] = c_away['TB'] / c_away['AB']
+
+    c_home['OPS'] = c_home['OBP'] + c_home['SLG']
     c_away['OPS'] = c_away['OBP'] + c_away['SLG']
+
+    c_home['HR_rate'] = c_home['HR'] / c_home['AB']
+    c_away['HR_rate'] = c_away['HR'] / c_away['AB']
+
+    c_home['1B_rate'] = c_home['1B'] / c_home['PA']
+    c_away['1B_rate'] = c_away['1B'] / c_away['PA']
+
+    c_home['Split'] = 'Home'
     c_away['Split'] = 'Away'
 
     print('Done')
@@ -248,50 +265,43 @@ def find_split(home_stats: pd.DataFrame, away_stats: pd.DataFrame,
 
 def main():
 
+    home, away = home_away_splits(2008, 2025, team='Seattle')
+
     # user input
-    stat1 = 'BA'
+    stat1 = 'SLG'
     stat2 = 'OBP'
-    start_year = 2008
-    end_year = 2026
-    team = 'Seattle'
-    mark = ['J.P. Crawford']
+    stat3 = 'HR_rate'
+    stat4 = '1B_rate'
 
-    home, away = home_away_splits(start_year, end_year, team)
+    stats = [stat1, stat2, stat3, stat4]
 
-    df = find_split(home, away, stat1, min_PA=0)
-    df2 = find_split(home, away, stat2, min_PA=0)
+    df1 = find_split(home, away, stat1, min_PA=320)
+    df2 = find_split(home, away, stat2, min_PA=460)
+    df3 = find_split(home, away, stat3, min_PA=170)
+    df4 = find_split(home, away, stat4, min_PA=290)
 
-    fig, ax = plt.subplots(1, figsize=(8, 8))
+    dfs = [df1, df2, df3, df4]
 
-    xs = []
-    ys = []
+    fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(14, 10))
 
-    for i in range(len(df)):
-        y = df.loc[i][stat1 + '_diff']
-        x = df2.loc[i][stat2 + '_diff']
-        if df.loc[i]['Name'] in mark:
+    axs = [ax1, ax2, ax3, ax4]
 
-            ax.scatter(x, y, label=f'{df.loc[i]['Name']}',
-                       marker='+', s=30, zorder=5)
-        else:
-            ax.scatter(x, y, color='k', marker='+', s=30)
+    for i in range(4):
 
-        xs.append(x)
-        ys.append(y)
+        xs = list(dfs[i][stats[i] + '_diff'])
+        axs[i].hist(xs, color='k', bins=15)
 
-    # average marker
-    ax.scatter(np.mean(xs), np.mean(ys), color='r',
-               label='Average Value', marker='.', s=100)
+        # average marker
+        axs[i].axvline(np.mean(xs), color='r', linestyle=':')
 
-    # 0 lines
-    ax.axvline(0.0, color='k', linestyle=':')
-    ax.axhline(0.0, color='k', linestyle=':')
+        # 0 lines
+        axs[i].axvline(0.0, color='k', linestyle=':')
 
-    ax.set_xlabel('On-Base Percentage Split')
-    ax.set_ylabel('Batting Average Split')
+        axs[i].set_xlabel(f'{stats[i]}')
+        axs[i].set_ylabel('Counts')
 
-    plt.legend()
-    plt.savefig('home/away_splits.png', bbox_inches='tight')
+    fig.suptitle('Home and Away Splits')
+    plt.savefig('home_away_splits.png', bbox_inches='tight')
 
 
 if __name__ == '__main__':
