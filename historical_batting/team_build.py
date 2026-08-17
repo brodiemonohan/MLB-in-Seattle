@@ -70,7 +70,7 @@ def league_power(start_year: int, end_year: int) -> pd.DataFrame:
         return(pd.DataFrame(output))
 
 
-def team_relative_power(start_year: int, end_year: int, team: str) -> pd.DataFrame:
+def rel_team_power(start_year: int, end_year: int, team: str) -> pd.DataFrame:
     '''
     Takes a start year and end year between 2008 and 2025 as well as
     a team and returns team power metrics relative to league avg.
