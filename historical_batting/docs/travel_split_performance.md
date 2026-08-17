@@ -35,9 +35,9 @@ Filter home and away stats from `home_away_splits` to the home difference and a 
 
 `stat:` String representing the chosen stat. A valid example would be 'OBP'.
 
-`min_PA` Optional integer representing the minimum plate apperances a player must have to be included in the output.
+`min_PA:` Optional integer representing the minimum plate apperances a player must have to be included in the output.
 
-`min_BA` Optional integer representing the minimum at-bats a player must have to be included in the output.
+`min_BA:` Optional integer representing the minimum at-bats a player must have to be included in the output.
 
 ## Example:
 

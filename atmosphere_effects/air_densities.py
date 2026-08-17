@@ -69,7 +69,7 @@ def start_times(year: int = 2025, venue_id: int = 680) -> list[str]:
     return pd.Series(start_times)
 
 
-def temp_data(lon, lat, year):
+def temp_data(lon: float, lat: float, year: int):
     '''
     '''
     params = {
@@ -110,8 +110,8 @@ def temp_data(lon, lat, year):
     return df
 
 
-def average_temp(lon, lat, year: int = 2025, venue_id: int = 680):
-    
+def average_temp(lon: float, lat: float, year: int = 2025, venue_id: int = 680):
+
     T = temp_data(lon, lat, year)
     s = start_times(year, venue_id)
     temps = []
@@ -121,7 +121,7 @@ def average_temp(lon, lat, year: int = 2025, venue_id: int = 680):
     return ts.mean() + 274.15
 
 
-def density(T, e, kg_mol):
+def density(T: float, e: float, kg_mol: float = 0.0289647):
 
     R = 8.314462  # J/(mol*K)
     P_0 = 101325  # Pa
