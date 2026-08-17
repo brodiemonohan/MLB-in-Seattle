@@ -12,13 +12,29 @@ The three forces that determine the path of a baseball though the air are gravit
 
 This file defines 4 helper functions that compute the drag and Magnus effect coefficents due to drag and the Magnus force, as well as the forces themselves based on the required input parameters. The 5th function combines these helper functions with the force due to gravity into a comprehensive function that numerically computes the flight path of the ball in the 2D x-z plane (keeing the same axis convention as StatCast) by computing the forces, the velocity, and position of the ball at time steps defined by the user.
 
+## air_densities.py
+
+This file pulls game start times for a given stadium and matches them to hourly temperature data from open-mateo to get an average temperature during games for a given stadium. This is then used in conjunction with elevation data from open-mateo to compute the average air density during a game at a given stadium using the ideal gas law and the barometric equation.
+
+## testing.py
+
+This file tests the air_density,py and trajectory_calculation.py files by comparing real hit data to simulated data produced with those two files.
+
 # Historical Batting
 
 ![Home Away Splits](paper/figures/home_away_splits.png)
 
 ## traded_player_performance.py
 
-This file will contain functions to pull batting data of players who were traded to or from a team in a given time-span to compare thier performaces on the given team to all other teams to check for trends.
+This file defines functions to pull batting data of players who were traded to or from a team in a given time-span to compare thier performaces on the given team to all other teams to check for negative trends.
+
+## travel_split_performance.py
+
+This file pulls home and away stats for players who played at least a single season for the specified team and compares them.
+
+## testing.py
+
+This file tests the traded_player_performance.py and travel_split_performance.py files by comparing select outputs to manually calculated data from FanGraphs.com.
 
 # Ancillary Data
 
