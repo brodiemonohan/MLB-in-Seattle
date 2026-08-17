@@ -14,6 +14,8 @@ This file defines 4 helper functions that compute the drag and Magnus effect coe
 
 # Historical Batting
 
+![Home Away Splits](paper/figures/home_away_splits.png)
+
 ## traded_player_performance.py
 
 This file will contain functions to pull batting data of players who were traded to or from a team in a given time-span to compare thier performaces on the given team to all other teams to check for trends.
