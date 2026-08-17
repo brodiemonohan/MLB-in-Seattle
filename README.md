@@ -52,10 +52,6 @@ Outputs: distance (float)
 
 Takes required arguments exit velocity (v, m/s), spin rate (omega, rad/s), air density (rho, kg/m^3), launch angle (angle, rad), and spin vector (axis, rad), as well as default arguments time step (step, s), trajectory label, line color, step marker, line style, acceleration due to gravity (g), the mass of the ball (m) the initial position of the ball (x), and the initial height of the ball (z). The function produces a numerically calculated trajectory of an MLB baseball via plotting the 2D position of the ball in x-z space while z is positive and returns the final x distance. The savefig function is not called so that multiple instances of the trajectory function can be stacked in a single graph to show parameter variation. An important note is that the spin axis is restricted to the y-axis where 0 rad defines pure backspin and $\pi$ rad is pure top spin.
 
-## example.ipynb
-
-This is an example notebook that shows how the flight_trajectory_numerical_calculation.py functions are meant to be used. The example uses are the calls that generated the graphics in the accompanying paper.
-
 # Historical Batting
 
 ## traded_player_performance.py

@@ -1,3 +1,11 @@
+'''
+Brodie Monohan
+CSE 163
+
+This file defines the air density function and its
+helper functions to be using in the trajectory calculator.
+'''
+
 import pandas as pd
 import numpy as np
 import openmeteo_requests
@@ -29,6 +37,8 @@ def elevation(lon: float, lat: float) -> float:
     e = response.Elevation()
     return e
 
+# I looked up how to do this because I needed the nearest hour for
+# game start times which I mention in report
 
 def hour_rounder(t):
     # Rounds to nearest hour by adding a timedelta hour if minute >= 30
@@ -38,6 +48,8 @@ def hour_rounder(t):
 
 def start_times(year: int = 2025, venue_id: int = 680) -> list[str]:
     '''
+    Takes a year and a venue id and returns a list of start times
+    from that season
     '''
     params = {
         "sportId": 1,
@@ -99,6 +111,7 @@ def temp_data(lon, lat, year):
 
 
 def average_temp(lon, lat, year: int = 2025, venue_id: int = 680):
+    
     T = temp_data(lon, lat, year)
     s = start_times(year, venue_id)
     temps = []

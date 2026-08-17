@@ -23,13 +23,14 @@ def home_away_splits(start_year: int = 2008, end_year:
     '''
     Takes a year range and a team. Returns the home and away
     stats for every player that played at least a full season
-    for the given team.
+    for the given team. This function takes about 45 mins to
+    run with the full 2008 to 2025 season range.
     '''
 
     home_tot = []
     away_tot = []
 
-    # this function took up to 45 mins when I ran it...
+    # good to know this function is running
     print('Running')
     print('...')
 
@@ -232,7 +233,7 @@ def home_away_splits(start_year: int = 2008, end_year:
 
 
 def find_split(home_stats: pd.DataFrame, away_stats: pd.DataFrame,
-               stat: str = 'BA', min_PA: int = 0,
+               stat: str, min_PA: int = 0,
                min_AB: int = 0) -> pd.DataFrame:
     '''
     Takes the home and away dfs from home_away_splits as well as a
@@ -289,7 +290,7 @@ def main():
     for i in range(4):
 
         xs = list(dfs[i][stats[i] + '_diff'])
-        axs[i].hist(xs, color='k', bins=15)
+        axs[i].hist(xs, color='grey', bins=15)
 
         # average marker
         axs[i].axvline(np.mean(xs), color='r', linestyle=':')
