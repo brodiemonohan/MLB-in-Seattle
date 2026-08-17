@@ -49,7 +49,7 @@ def hour_rounder(t):
 def start_times(year: int = 2025, venue_id: int = 680) -> list[str]:
     '''
     Takes a year and a venue id and returns a list of start times
-    from that season
+    from that season rounded to the nearest hour.
     '''
     params = {
         "sportId": 1,
@@ -69,8 +69,10 @@ def start_times(year: int = 2025, venue_id: int = 680) -> list[str]:
     return pd.Series(start_times)
 
 
-def temp_data(lon: float, lat: float, year: int):
+def temp_data(lon: float, lat: float, year: int) -> pd.DataFrame:
     '''
+    Takes longitude and latitude data as well as a year and returns the
+    hourly temperature data.
     '''
     params = {
         "latitude": lat,
@@ -110,8 +112,14 @@ def temp_data(lon: float, lat: float, year: int):
     return df
 
 
-def average_temp(lon: float, lat: float, year: int = 2025, venue_id: int = 680):
-
+def average_temp(lon: float, lat: float, year: int = 2025, venue_id: int = 680) -> float:
+    '''
+    Takes longitude, latitude, year, and venue_id data and matches
+    hourly temp data and matches them to game start times for
+    a given MLB stadium then averages them to get an average
+    temp during games at that stadium over the course of a
+    year.
+    '''
     T = temp_data(lon, lat, year)
     s = start_times(year, venue_id)
     temps = []
@@ -121,8 +129,12 @@ def average_temp(lon: float, lat: float, year: int = 2025, venue_id: int = 680):
     return ts.mean() + 274.15
 
 
-def density(T: float, e: float, kg_mol: float = 0.0289647):
-
+def density(T: float, e: float, kg_mol: float = 0.0289647) -> float:
+    '''
+    Takes a temperature, elevation, and molar mass and returns the density
+    of air in this environment using the barometric equation and the
+    ideal gas law
+    '''
     R = 8.314462  # J/(mol*K)
     P_0 = 101325  # Pa
 

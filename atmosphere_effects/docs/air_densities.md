@@ -14,6 +14,7 @@ Takes a latitude and logitude from `stadium_data.csv` and returns the elevation 
 
 ```python
 import air_densities as ad
+import pandas as pd
 
 df = pd.read_csv('stadium_data.csv')
 lons = df['longitude']
@@ -51,6 +52,7 @@ Takes a latitude, logitude from `stadium_data.csv`, year, and a venue id and ret
 
 ```python
 import air_densities as ad
+import pandas as pd
 
 df = pd.read_csv('stadium_data.csv')
 lons = df['longitude']
@@ -87,6 +89,7 @@ Takes temperature and elevation data as well as the mass of a mol of dry air and
 
 ```python
 import air_densities as ad
+import pandas as pd
 
 df = pd.read_csv('stadium_data.csv')
 lons = df['longitude']
