@@ -11,6 +11,14 @@ import traded_player_performance as tra
 import team_build as tb
 import travel_split_performance as tsp
 
+home, away = tsp.home_away_splits(2025, 2025, team='Seattle')
+df = tsp.find_split(home, away, 'OBP')
+df = df[df['Name'] == 'J.P. Crawford']
+
+print(df['OBP_diff'].iloc[0])
+
+assert 0.011 > df['OBP_diff'].iloc[0] > 0.009
+
 df = tra.find_traded_players(team='Seattle')
 
 df_ken = df[df['Name'] == 'Ken Griffey Jr.']
@@ -34,9 +42,4 @@ df = df[df['Season'] == 2025]
 assert 0.017 >= df['ISO'].iloc[0] >= 0.015
 assert 0.018 >= df['SLG'].iloc[0] >= 0.016
 assert 0.007 >= df['HR_rate'].iloc[0] >= 0.005
-
-home, away = tsp.home_away_splits(2025, 2025, team='Seattle')
-df = tsp.find_split(home, away, 'OBP')
-
-assert 0.009 >= df['J. P. Crawford']['OBP_diff'] >= 0.011
 

@@ -252,7 +252,7 @@ def find_split(home_stats: pd.DataFrame, away_stats: pd.DataFrame,
         home = home_stats.loc[name]
         away = away_stats.loc[name]
 
-        # impliment AB and PA threshold
+        # implement AB and PA threshold
         if (home['PA'] >= min_PA
                 and away['PA'] >= min_PA
                 and home['AB'] >= min_AB
