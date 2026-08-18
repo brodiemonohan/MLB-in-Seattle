@@ -50,22 +50,26 @@ The Seattle Mariners are the only Major League Baseball team to never appear in 
 \doublespacing
 
 \section{Research Questions}
-I set out to answer three quesitons about the supposed disadvantages for hitters in T-Mobile Park. The first quesiton was if hitter performance demonstrated a systematic dip as a Seattle Mariner or at T-Mobile Park by looking at traded player performance and historic home vs away splits respectively. The results indicate no systematic trends in loss of production as a Seattle Mariner or in T-Mobile Park. The average change in performance remained within 3\% of zero for both home/away splits and season performce on either side of a trade with Seattle for a range of stats including On-Base Percentage (OBP), Slugging (SLG), Home Run rate (HR rate), and singles (1B). The second question was if the enviromnent of T-Mobile Park (and Seattle in general) was a significant factor in the flight of a baseball such that playing at T-Mobile Park is disadvantageous in terms of how far a ball travels for given hit parameters. The results did show a significant difference in trajectories between stadiums. Based on temperature, elevation, and coordinate data, a ball hit in the range of typical home-run parameters can travel up to 10 meters farther in Colorado compared to Seattle. The third question was if these results indicated an overall competitive disadvantage for the Seattle Mariners. The results for this question were mixed. Historical slugging numbers suggest that Mariner teams, especially in the past few years, have relied on hard-hit balls, slugging, and homeruns. The first question indicated that historically, SLG and HR rate were seemingly unaffected by T-Mobile Park or the Mariners organization, however, the second question indicated that there is a physical limitation in T-Mobile Park for hard-hit and high hang-time balls, like home-runs. Possible explainations are explored in the results section.
+I set out to answer three questions about the supposed disadvantages for hitters in T-Mobile Park. The first question was if hitter performance demonstrated a systematic dip as a Seattle Mariner or at T-Mobile Park by looking at traded player performance and historic home vs away splits respectively. The results indicate no systematic trends in loss of production as a Seattle Mariner or in T-Mobile Park. The average change in performance remained within 3\% of zero for both home/away splits and season performance on either side of a trade with Seattle for a range of stats including On-Base Percentage (OBP), Slugging (SLG), Home Run rate (HR rate), and singles (1B). The second question was if the environment of T-Mobile Park (and Seattle in general) was a significant factor in the flight of a baseball such that playing at T-Mobile Park is disadvantageous in terms of how far a ball travels for given hit parameters. The results did show a significant difference in trajectories between stadiums (as was expected). Based on temperature, elevation, and coordinate data, a ball hit in the range of typical home-run parameters can travel up to 10 meters farther in Colorado compared to Seattle. The third question was if these results indicated an overall competitive disadvantage for the Seattle Mariners. The results for this question were mixed. Historical team batting numbers suggest that some Mariner teams, especially in the past few years, have relied on hard-hit balls, slugging, and home-runs. The first question indicated that historically, SLG and HR rate were seemingly unaffected by T-Mobile Park or the Mariners organization, however, the second question indicated that there is a physical limitation in T-Mobile Park for hard-hit and high hang-time balls, like home-runs. Possible explanations are explored in the results section.
 
 \section{Motivation}
-My motivation for this research has stayed pretty much the same which is described in the abstract (I put it up there becuase I think it is better to read first and it goes nicely into a README). I wanted to investigate the ad nauseum argument that hitting is harder in Seattle. I made no updates since the EDA assignment.
+My motivation for this research has stayed pretty much the same which is described in the abstract (I put it up there because I think it is better to read first, and it goes nicely into a \texttt{README}). I wanted to investigate the ad nauseum argument that hitting is harder in Seattle. I made no updates since the EDA assignment.
 
 \section{Dataset(s)}
 My main dataset comes from \texttt{pybaseball}. The MLB and third parties have tracked statistics since far before the 1999 season when the Mariners changed stadiums, however, the MLB started to take advanced statistics after the 2014 season with StatCast which includes things like swing speed, launch angle, launch velocity, and other advanced metrics which will be useful for my analysis. An open source Python package already exists for these analytics called \texttt{pybaseball} which scrapes Baseball Savant (built on StatCast), as well as Baseball Reference which are two more proprietary baseball statistic trackers. Documentation can be found at \url{pypi.org/project/pybaseball/}. This package works with \texttt{pandas} and can be indexed and manipulated as a DataFrame.
 
-My second dataset comes from \texttt{openmeteo-requests} which collects hourly weather data from Open Mateo as a Python package. Documentation can be found at url{https://pypi.org/project/openmeteo-requests/}. To access this data I had to use a new library (\texttt{requests}) which is my other challenge goal. I also used at one point to scrape MLB game-time data directly that \texttt{pybaseball} did not have a simple way to obtain.
+My second dataset comes from \texttt{openmeteo-requests} which collects hourly weather data from Open Mateo as a Python package. Documentation can be found at \url{https://pypi.org/project/openmeteo-requests/}. To access this data I had to use a new library (\texttt{requests}) which is my other challenge goal.
+
+My third dataset is \texttt{MLB-StatsAPI}. Documentation can be found at \url{https://pypi.org/project/MLB-StatsAPI/}. \texttt{pybaseball} did not have direct access to MLB game-time data, so I had to use this instead which had a very similar format to \texttt{openmateo-requests} and used the \texttt{requests} library.
+
+My fourth dataset is a small \texttt{.csv} file I manually scraped from Google Maps and MLB.com which has stadium longitude and latitude data as well as venue IDs for \texttt{MLB-StatsAPI}. 
 
 
 \section{Method}
 
 \subsection{Historical Batting}
 
-I look at systematic drops in batter performance in T-Mobile Park by comparing home and away splits as well as season perfromace on either side of a trade with the Seattle Mariners. I pull batting averages (BA), on-base percentages (OBP), home-run rate, and slugging percentages (SLG) for players traded to or from Seattle since 2008 and plot them as a one-dimensional histogram.
+I look at systematic drops in batter performance in T-Mobile Park by comparing home and away splits as well as season performance on either side of a trade with the Seattle Mariners. I pull batting averages (BA), on-base percentages (OBP), home-run rate, and slugging percentages (SLG) for players traded to or from Seattle since 2008 and plot them as a one-dimensional histogram.
 
 \begin{figure}
     \centering
@@ -102,22 +106,22 @@ where $S = R \omega/ v$. The radius and mass of an MLB baseball are also well es
 \begin{equation}
     PV = nRT \rightarrow n/V = \rho = P/RT 
 \end{equation}
-where $P$ is pressure (Pa), $V$ is volume (m$^3$), $n$ is the number of moles, $R$ is the ideal gas constant ($\rm J\cdot mol^{-1}\cdot K^{-1}$), and $T$ is the temperature (K), and $\rho$ is the air density ($\rm mol\cdot m^{-3}$). This equation will yeild the number density of moles of air particles per cubic meter which I can convert to a mass denisty (which the above models expect) by multiplying the number density by the mass of dry air $m_{\rm air} = 0.0289647$ $\rm kg \cdot mol^{-1}$. To get pressure I can pull elevation data from \texttt{open-mateo} using stadium coordinate data. The elevation can translate to pressure via barometric formula.
+where $P$ is pressure (Pa), $V$ is volume (m$^3$), $n$ is the number of moles, $R$ is the ideal gas constant ($\rm J\cdot mol^{-1}\cdot K^{-1}$), and $T$ is the temperature (K), and $\rho$ is the air density ($\rm mol\cdot m^{-3}$). This equation will yield the number density of moles of air particles per cubic meter which I can convert to a mass density (which the above models expect) by multiplying the number density by the mass of dry air $m_{\rm air} = 0.0289647$ $\rm kg \cdot mol^{-1}$. To get pressure I can pull elevation data from \texttt{open-mateo} using stadium coordinate data. The elevation can translate to pressure via barometric formula.
 \begin{equation}
     P = P_0 (1 - 2.25577 \cdot 10^{-5} \cdot e)^{5.25588}
 \end{equation}
-where $P_0 = 101325$ Pa is the pressure at sea level, and $e$ is the elevation (m). This leave just the temperature unresolved. For this I can pull hourly temperature data from \texttt{open-mateo} from the start time of each game during the 2025 MLB season for each team to find the average air density during a given game at each current MLB stadium. All together, I can combine equations 1-7 with Euler's Method to numerically calculate a trajectory for a given set of hit parameters ($v$, $\omega$, $\theta_{\rm angle}$ (launch angle), and $\theta_{\rm axis}$ (spin axis)) for the average game at each current MLB stadium.
+where $P_0 = 101325$ Pa is the pressure at sea level, and $e$ is the elevation (m). This leaves just the temperature unresolved. For this I can pull hourly temperature data from \texttt{openmateo-requests} from the start time of each game during the 2025 MLB season for each team to find the average air density during the average game at each current MLB stadium. All together, I can combine equations 1-7 with Euler's Method to numerically calculate a trajectory for a given set of hit parameters ($v$, $\omega$, $\theta_{\rm angle}$ (launch angle), and $\theta_{\rm axis}$ (spin axis)) for the average game at each current MLB stadium.
 
 \subsection{Competitive Advantages}
 
-For the third question I look at if there has been any major competitive impact to Mariners players or seasons based on player archetype. This question is specifically motivate by this year's team which is built as a ``slugging'' team which some criticize for a place like Seattle for not playing into the strengths of the park. The New York Yankees, for example, tend to buy or trade for left handed power hitters because right field in Yankee Stadium is significantly shorter than in other parks, turning pop-outs into home-runs for 81 games a year. I look at team batting stats like SLG, HR rate, and isolated power (ISO) and compare them to the league average.
+For the third question I look at if there has been any major competitive impact to Mariners players or seasons based on player archetype. This question is specifically motivate by this year's team which is built as a ``slugging'' team which some criticize for a place like Seattle for not playing into the strengths of the park. The New York Yankees, for example, tend to buy or trade for left-handed power hitters because right field in Yankee Stadium is significantly shorter than in other parks, turning pop-outs into home-runs for 81 games a year. I look at team batting stats like SLG, HR rate, and isolated power (ISO) and compare them to the league average.
 
 \section{EDA Results}
 
 For the EDA I built one of the functions for question 1: how does player performance change when traded to or from the Mariners? I also made significant progress on question 2: does the air density, wind, temperature, and/or humidity in Seattle cause baseballs to travel differently compared to other major league stadiums and is it disadvantageous to hitters?
 
 \subsection{Question 1}
-I attacked this one first because seemed the hardest to implement. To do this, I used the \texttt{batting\_stats\_bref} function from \texttt{pybaseball} which takes a year argument and returns a DataFrame of all of the batting statistics for that season (seasons lineup with calendar years in MLB baseball). Each row is a unique player with the headers
+I attacked this one first because seemed the hardest to implement. To do this, I used the \texttt{batting\_stats\_bref} function from \texttt{pybaseball} which takes a year argument and returns a DataFrame of all the batting statistics for that season (seasons lineup with calendar years in MLB baseball). Each row is a unique player with the headers
 
 \begin{verbatim}
 'Name', 'Age', '#days', 'Lev', 'Tm',
@@ -146,7 +150,7 @@ during the EDA I was worried about the effect of spin-down on the ball as fricti
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{figures/trajectory_plot.png}
-    \caption{The trajectory of a baseball hit at 45$\rm m/s$ at an angle of $\pi/4$ rad (45$^\circ$) with pure backspin and a spin rate of 150 rad/s ($\approx$ 1,500 rpm) in different environments. The environmental data on air density each came from a quick google search but will eventually be replaced by a calculated air density based on the elevation and temperature data from my second dataset. I'm going to need to figure out how to force the axes to be the same scale so that the angle representation isn't skewed like it is here.}
+    \caption{The trajectory of a baseball hit at 45$\rm m/s$ at an angle of $\pi/4$ rad (45$^\circ$) with pure backspin and a spin rate of 150 rad/s ($\approx$ 1,500 rpm) in different environments. The environmental data on air density each came from a quick google search but will eventually be replaced by a calculated air density based on the elevation and temperature data from my second dataset.}
     \label{fig:trajectories}
 \end{figure}
 
@@ -187,14 +191,45 @@ This does not consider, however, ballpark dimensions which is an important facto
 
 \subsection{Competitive Disadvantages}
 
-To see how Mariner teams have historically been built I look at team batting in SLG, HR rate, and isolated power (ISO). This analysis showed that teams in the late 2000s and early 2010s were below league average in terms of power hitting compared to league average, leveled out in the mid to late 2010s, then became hard-hit focused in the 2020s. If the first two questions had yeilded significant results, then this could have had some implications. For example, if I found that hard-hit metrics dipped at T-Mobile then I could have argued that slugging teams would not be a good build for a team in Seattle. While the second question did show that balls will travel less-far in Seattle, I could not account for stadium dimensions which is a significant factor in if a hit becomes a home run and could potentially explain the discrepancy between quesitons 1 and 2.
+To see how Mariner teams have historically been built I look at team batting in SLG, HR rate, and isolated power (ISO). This analysis showed that teams in the late 2000s and early 2010s were below league average in terms of power hitting compared to league average, leveled out in the mid to late 2010s, then became hard-hit focused in the 2020s. The full splits can be found in Table 1. If the first two questions had yielded significant results, then this could have had some implications. For example, if I found that hard-hit metrics dipped at T-Mobile then I could have argued that slugging teams would not be a good build for a team in Seattle. While the second question did show that balls will travel less-far in Seattle, I could not account for stadium dimensions which is a significant factor in if a hit becomes a home run and could potentially explain the discrepancy between questions 1 and 2. This leaves question 3 with little insight into competitive advantages or disadvantages in T-Mobile Park.
+
+\begin{table}[t]
+\centering
+\title{Mariner Power Team Stats}
+\begin{tabular}{rrrr}
+\hline
+Season & ISO & SLG & HR\_rate \\
+\hline
+2008 & -0.030271 & -0.026491 & -0.006508 \\
+2009 & -0.001676 &  0.004956 &  0.001869 \\
+2010 & -0.051938 & -0.073512 & -0.011271 \\
+2011 & -0.028755 & -0.050709 & -0.006699 \\
+2012 & -0.014335 & -0.036833 & -0.001535 \\
+2013 &  0.013471 &  0.003789 &  0.005902 \\
+2014 &  0.005362 &  0.003563 &  0.001665 \\
+2015 &  0.018928 &  0.012333 &  0.007053 \\
+2016 &  0.010887 &  0.015869 &  0.005797 \\
+2017 & -0.003506 &  0.003784 & -0.000172 \\
+2018 & -0.006523 & -0.000680 & -0.000572 \\
+2019 & -0.002593 & -0.014516 & -0.000441 \\
+2020 & -0.031300 & -0.055703 & -0.006881 \\
+2021 & -0.000508 & -0.018492 &  0.002118 \\
+2022 &  0.005848 & -0.002957 &  0.002449 \\
+2023 &  0.009706 &  0.008433 &  0.002932 \\
+2024 &  0.000294 & -0.025402 &  0.002757 \\
+2025 &  0.016226 &  0.017155 &  0.006635 \\
+\hline
+\end{tabular}
+\caption{Seattle Mariners power metrics relative to league average (2008--2025)}
+\label{tab:mariners_power}
+\end{table}
 
 \section{Impact and Limitations}
 
-These results from question 1 show little systematic production changes due to players playing in Seattle or for the Mariners. This would suggest that the poor team perfromances are due to errors in recruiting and player evaluation by the organization. It also could suggest that perhaps Mariner teams intentionally use capital in areas besides hitting. The results from question 2 show that hard-hit, high-angle balls do not result in as far trajectories in Seattle compared to other stadiums. This would suggest that sluggers who rely on home-runs for run production likely aren't the best fit for a team playing in Seattle for half of their games. This is a particularly important implication given the current team's reliance on home-runs. There are clear limitations to this analysis. The most pressing are the field dimensions which weren't accounted for here and the assumptions about spin rate on batted balls which is not publicly tracked.
+These results from question 1 show little systematic production changes due to players playing in Seattle or for the Mariners. This would suggest that the poor team perfromances are due to errors in recruiting and player evaluation by the organization. It also could suggest that perhaps Mariner teams intentionally use capital in areas besides hitting. The results from question 2 show that hard-hit, high-angle balls do not result in as far trajectories in Seattle compared to other stadiums. This would suggest that sluggers who rely on home-runs for run production likely aren't the best fit for a team playing in Seattle for half of their games. This is a particularly important implication given the current team's reliance on home-runs, however, as discussed in the results this may be misleading. There are clear limitations to this analysis. The most pressing are the field dimensions which weren't accounted for here and the assumptions about spin rate on batted balls which is not publicly tracked.
 
 \section{Challenge Goals}
-My challenge goals have been a bit of a mess because I am doing a lot of things that could be a challenge goal. In the end I used multiple datasets and used a second library. I used \texttt{openmateo-requests} and the small manually entered \texttt{stadium\_data.csv} for the weather and elevation data in combination with the trajectory calculator function. I also used a second library \texttt{requests} which can be found at \url{https://pypi.org/project/requests/}.
+My challenge goals have been a bit of a mess because I am doing a lot of things that could be a challenge goal. In the end I used multiple datasets and used a second library which were my proposal goals. I used \texttt{openmateo-requests}, \texttt{MLBStats-API} and the small manually entered \texttt{stadium\_data.csv} for the weather and elevation data in combination with the trajectory calculator function. I also used a second library \texttt{requests} which can be found at \url{https://pypi.org/project/requests/}.
 
 \section{Work Plan Evaluation}
 I followed my work plan almost exactly. 
@@ -209,7 +244,7 @@ I followed my work plan almost exactly.
     \item Write docs for each function using mark-down $\checkmark$
     \item Write-up findings in \LaTeX $\checkmark$
 \end{enumerate}
-I also have and will continue to push my project to GitHub.
+I followed these steps in this order and did not have to make any major changes.
 
 \section{Testing}
 
@@ -221,11 +256,11 @@ I built testing files for the trajectory calculator which compares estimated hit
     \caption{This is the graph of all the simulated home-runs for Julio Rodríguez for 2026 that corresponds with the table. This plot also suffers from the axis being at different scales so I'm going to need to fix that at some point. It makes the hits look shallower than they actually are.}\label{fig:Julio_tra}
 \end{figure}
 
-For testing the batting data code, I found and manually calculated all the data for Ken Griffey Jr. using FanGraphs (not the same place as I am getting the data via \texttt{pybaseball}) just to make sure all the stats agree. I then tested it with assert statments in a testing.py file. For the calculated stats like SLG, BA, and OBP, I had to give the statements a range of values that were acceptable (the third decimal place) becasue these values often get rounded in computaion at different points. It all checked out.
+For testing the batting data code, I found and manually calculated all the data for Ken Griffey Jr., J. P. Crawford, and the 2025 Seattle Mariners using FanGraphs (not the same place as I am getting the data via \texttt{pybaseball}) just to make sure all the stats agree. I then tested it with assert statements in a testing.py file. For the calculated stats like SLG, BA, and OBP, I had to give the statements a range of values that were acceptable (the third decimal place) because these values often get rounded in computation at different points. It all checked out.
 
 \section{Citations}
 
-Aside from the references I have listed below which I can cite properly, I also consulted the \texttt{matplotlib} and \texttt{numpy} documentation breifly for things like \texttt{np.mean} and the trigonometry functions as well as \texttt{fig.suptitle()} and \texttt{plt.hist()}. I also consulted the \texttt{pybaseball} documentation which I listed above in the dataset section. I consulted Google Maps and \url{MLB.com} for stadium information, specifically coordinate data. When pulling real data to test my functions, I consulted \url{baseballsavant.mlb.com} and \url{baseball-reference.com} which are both part of my data but to check my funcitons I had to actually go to their websites. For my second dataset I consulted the open-mateo requests documentation at \url{https://pypi.org/project/openmeteo-requests/} from which I got most of the structure for the \texttt{openmateo-requests} syntax and structure in \texttt{air\_densities.py}. I also looked at the datetime documentation because Open Mateo uses datetime objects \url{https://docs.python.org/3/library/datetime.html}. I got the venue IDs manually from \url{https://statsapi.mlb.com/api/v1/venues}. I also consulted \url{https://pypi.org/project/MLB-StatsAPI/} for the game start times data I got using \texttt{requests}.
+Aside from the references I have listed below which I can cite properly, I also consulted the \texttt{matplotlib} and \texttt{numpy} documentation breifly for things like \texttt{np.mean} and the trigonometry functions as well as \texttt{fig.suptitle()} and \texttt{plt.hist()}. I also consulted the \texttt{pybaseball} documentation which I listed above in the dataset section. I consulted Google Maps and \url{MLB.com} for stadium information, specifically coordinate data. When pulling real data to test my functions, I consulted \url{baseballsavant.mlb.com} and \url{baseball-reference.com} which are both part of my data but to check my funcitons I had to actually go to their websites. For my second dataset I consulted the open-mateo requests documentation at \url{https://pypi.org/project/openmeteo-requests/} from which I got most of the structure for the \texttt{openmateo-requests} syntax and structure in \texttt{air\_densities.py}. I also looked at the datetime documentation because Open Mateo uses datetime objects \url{https://docs.python.org/3/library/datetime.html}. I got the venue IDs manually from \url{https://statsapi.mlb.com/api/v1/venues}. I also consulted \url{https://pypi.org/project/MLB-StatsAPI/} for the game start times data I got using \texttt{requests}. To do the \texttt{datetime} rounding I looked at the \texttt{datetime} docs and \url{https://www.geeksforgeeks.org/python/datetime-replace-function-in-python/}
 
 
 \bibliographystyle{apalike}

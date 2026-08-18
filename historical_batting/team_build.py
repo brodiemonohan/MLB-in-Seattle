@@ -39,7 +39,7 @@ def team_power(start_year: int, end_year: int, team: str) -> pd.DataFrame:
                       'SLG': slg,
                       'HR_rate': hr_rate})
 
-        return(pd.DataFrame(output))
+    return(pd.DataFrame(output))
 
 
 def league_power(start_year: int, end_year: int) -> pd.DataFrame:
@@ -67,7 +67,7 @@ def league_power(start_year: int, end_year: int) -> pd.DataFrame:
                       'SLG': slg,
                       'HR_rate': hr_rate})
 
-        return(pd.DataFrame(output))
+    return(pd.DataFrame(output))
 
 
 def rel_team_power(start_year: int, end_year: int, team: str) -> pd.DataFrame:
@@ -75,20 +75,24 @@ def rel_team_power(start_year: int, end_year: int, team: str) -> pd.DataFrame:
     Takes a start year and end year between 2008 and 2025 as well as
     a team and returns team power metrics relative to league avg.
     '''
+    print('Running')
+    print('...')
     team_df = team_power(start_year, end_year, team)
     league_df = league_power(start_year, end_year)
 
     output = pd.DataFrame()
+
     output['Season'] = league_df['Season']
     output['ISO'] = team_df['ISO'] - league_df['ISO']
     output['SLG'] = team_df['SLG'] - league_df['SLG']
     output['HR_rate'] = team_df['HR_rate'] - league_df['HR_rate']
 
+    print('Done')
     return output
 
 
 def main():
-    print(team_relative_power(2008, 2025, 'Seattle'))
+    print(rel_team_power(2008, 2025, 'Seattle'))
 
 
 if __name__ == '__main__':

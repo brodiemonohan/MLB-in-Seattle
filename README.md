@@ -2,6 +2,22 @@
 
 The Seattle Mariners are the only Major League Baseball team to never appear in a World Series. Despite being near the middle of the pack in terms of payroll, Mariner teams since the early 2000s have been disappointing to say the least, with historically bad offenses in the 2010s. Since the team's move from their old stadium into what would become T-mobile Park (formerly Safeco Field), some analysts have noticed that batters seem to perform poorly in the stadium. Former sluggers who were traded to the Mariners would constantly under-perform with their new team, or so it seemed. Some analysts began to theorize there was some external factor causing batters to lose production when being traded to the Mariners. The most prominent theory is that the Seattle climate and the stadium itself that was causing hitters to under-perform. This theory is reinforced by the pitching statistics for Seattle which, since 2000, have been historically good. While a "cursed" stadium is a romantic way to explain the Mariner's historic woes, there is also a much more ordinary explanation: that Mariners have just been bad hitters. This project examines if hitting in Seattle is significantly "harder" or if players are worse when playing in Seattle by looking at historical batting numbers and investigating the physical conditions of T-Mobile Park. Read the full paper [here](paper/main.pdf).
 
+Required installs:
+
+```bash
+pip install openmeteo-requests
+pip install pybaseball
+pip install MLB-StatsAPI
+pip install pandas
+pip install numpy
+pip install requests
+pip install matplotlib
+```
+
+Instructions:
+
+All files and paths should run as they are set up in the repo. Cache folders will be generated. Individual instructions on how function work are in docs folders within each section folder. A lot of these functions take a long time to run (up-to 45 mins) for full datasets so it may be worth creating a notebook to run some of the functions on smaller datasets (like 2023 to 2025 for year ranges). Otherwise, just run each file and the outputs will show in terminal or be saved to a file in the current directory.
+
 # Atmosphere Effects
 
 ![Trajectories in All 30 MLB Stadiums](paper/figures/full_trajectory_plot.png)
