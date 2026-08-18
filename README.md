@@ -70,6 +70,10 @@ This file stores data needed for air_densities.py. Nothing to run here.
 
 This is the file I wrote the final report in using LaTeX. Running it generates the .pdf and auxiliary files.
 
+### main.pdf
+
+This is the generated .pdf file from the main.tex file.
+
 ### ref.bib
 
 This is the references file I used for the academic papers I cite. Needed for main.tex to run.
