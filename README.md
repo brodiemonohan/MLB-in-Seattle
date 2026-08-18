@@ -26,7 +26,7 @@ The three forces that determine the path of a baseball though the air are gravit
 
 ### trajectory_calculation.py
 
-This file defines 4 helper functions that compute the drag and Magnus effect coefficents due to drag and the Magnus force, as well as the forces themselves based on the required input parameters. The 5th function combines these helper functions with the force due to gravity into a comprehensive function that numerically computes the flight path of the ball in the 2D x-z plane (keeing the same axis convention as StatCast) by computing the forces, the velocity, and position of the ball at time steps defined by the user.
+This file defines 4 helper functions that compute the drag and Magnus effect coefficients due to drag and the Magnus force, as well as the forces themselves based on the required input parameters. The 5th function combines these helper functions with the force due to gravity into a comprehensive function that numerically computes the flight path of the ball in the 2D x-z plane (keeping the same axis convention as StatCast) by computing the forces, the velocity, and position of the ball at time steps defined by the user.
 
 ### air_densities.py
 
@@ -42,11 +42,15 @@ This file tests the air_density,py and trajectory_calculation.py files by compar
 
 ### traded_player_performance.py
 
-This file defines functions to pull batting data of players who were traded to or from a team in a given time-span to compare thier performaces on the given team to all other teams to check for negative trends.
+This file defines functions to pull batting data of players who were traded to or from a team in a given time-span to compare their performances on the given team to all other teams to check for negative trends. Output is a .png file plot.
 
 ### travel_split_performance.py
 
-This file pulls home and away stats for players who played at least a single season for the specified team and compares them.
+This file pulls home and away stats for players who played at least a single season for the specified team and compares them. Output is a .png file plot.
+
+### team_build.py
+
+This file finds relative team performance for hard-hit metrics ISO, HR rate, and SLG compared to league average. Output DataFrame in terminal.
 
 ### testing.py
 
@@ -55,3 +59,7 @@ This file tests the traded_player_performance.py and travel_split_performance.py
 # Ancillary Data
 
 This file contains extra useful data on MLB stadiums manually scraped from MLB.com and Google Maps. Elevation is rounded to the nearest meter. Data is up to date (2026). This is important for historical analysis considering the Athletics moved from Oakland in 2025 to Sacramento in 2026, and the Rays played in Tampa for the 2025 season due to huricane damage to Tropicana Field before returning in 2026.
+
+### stadium_data.csv
+
+This file stores data needed for air_densities.py. Nothing to run here.
