@@ -63,3 +63,17 @@ This file contains extra useful data on MLB stadiums manually scraped from MLB.c
 ### stadium_data.csv
 
 This file stores data needed for air_densities.py. Nothing to run here.
+
+# Paper
+
+### main.tex
+
+This is the file I wrote the final report in using LaTeX. Running it generates the .pdf and auxiliary files.
+
+### ref.bib
+
+This is the references file I used for the academic papers I cite. Needed for main.tex to run.
+
+### figures
+
+This folder contains all of the figures I used in the write-up as .png files.
