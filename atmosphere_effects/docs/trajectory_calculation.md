@@ -48,7 +48,7 @@ import trajectory_calculation as tra
 v = 45  # m/s
 omega = 150  # rad/s
 axis = 0  # rad, pure backspin
-angle = np.pi/6  # rad (45 deg)
+angle = np.pi/6  # rad (30 deg)
 step = 0.05  # s
 rho = 1.20. # kg/m^3
 
